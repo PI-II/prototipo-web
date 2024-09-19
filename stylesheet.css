@@ -1,0 +1,78 @@
+header {
+    background-color: rgba(226, 223, 26, 0.9);
+    color: white;
+    padding: 1em;
+}
+
+body {
+    background-image: url(https://www.shutterstock.com/image-photo/blur-background-gym-fitness-center-600nw-2321682989.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.info {
+   text-align: left;
+}
+
+.mang {
+    text-align: right;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    color: white;
+}
+
+.quicksand-nav {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+.logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: -25px;
+}
+
+div {
+    background-color: rgba(226, 223, 26, 0.9);
+    color: black;
+    padding: 20px;
+    text-align: center;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 10px solid rgba(0, 0, 0, 0.9);
+    border-radius: 25px;
+}
+
+input[type="submit"] {
+   border-radius: 25px;
+}
+
+input[type="submit"]:hover {
+    background-color: rgba(226, 223, 26, 0.9);
+    color: black;
+    transition: background-color 0.5s ease;
+}
+
+label {
+    position: relative;
+    transform: translateY(10px);
+}
+
+table {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
