@@ -68,6 +68,11 @@
                         senha: document.querySelector('#password').value
                     })
                 })
+                .catch((error) => {
+                    console.error('Request failed:', error);
+                    window.location.href = '/index.html';
+                });
+                    
                 return response.json();
             }
         </script>
