@@ -52,7 +52,7 @@
         </form>
         <script>
             async function postData() {
-                const response = await fetch('http://localhost:3000/users', {
+                await fetch('http://localhost:3000/users/new', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -65,8 +65,6 @@
                         senha: document.querySelector('#password').value
                     })
                 })
-                return response.json();
-                window.history.back();
             }
         </script>
         
