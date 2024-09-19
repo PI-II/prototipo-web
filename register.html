@@ -52,7 +52,9 @@
         </form>
         <script>
             async function postData() {
-                await fetch('http://localhost:3000/users/new', {
+                const email = document.querySelector('#email').value;
+                        
+                const response = await fetch('http://localhost:3000/users/new', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -60,11 +62,13 @@
                     body: JSON.stringify({
                         nome: document.querySelector('#name').value,
                         cpf: document.querySelector('#cpf').value,
-                        email: document.querySelector('#email').value,
+                        
+                        email: email,
                         tipo: document.querySelector('#tipo').value,
                         senha: document.querySelector('#password').value
                     })
                 })
+                return response.json();
             }
         </script>
         
