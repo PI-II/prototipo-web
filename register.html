@@ -40,8 +40,8 @@
             <br>
             <br>
             <label for="tipo">Tipo:</label>
-            <input type="checkbox" id="tipo" name="tipo" value="gerente">Gerente
-            <input type="checkbox" id="tipo" name="tipo" value="Aluno">Aluno
+            <input type="checkbox" id="tipo-ger" name="tipo" value="gerente">Gerente
+            <input type="checkbox" id="tipo-al" name="tipo" value="Aluno">Aluno
             <br>
             <br>
             <label for="password">Senha:</label>
@@ -53,6 +53,11 @@
         <script>
             async function postData() {
                 const email = document.querySelector('#email').value;
+                if (document.getElementById("tipo-ger").selected == true) {
+                    const tipo = "Gerente";
+                } else {
+                    const tipo = "Aluno";
+                }
                         
                 const response = await fetch('http://localhost:3000/users/new', {
                     method: 'POST',
@@ -79,6 +84,7 @@
         
            
     </div>
+    <!--
     <div class = "usuarios">
         <h2> Usuários</h2>
         <table border = "1" id = "usersTable">
@@ -128,5 +134,6 @@
           getData();
           
       </script>
+      -->
 </body>
 </html>
