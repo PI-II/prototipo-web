@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <title>TBA</title>
+  </head>
+  <body>
+    <header>
+      <img src="assets/dumbbell.png" alt="icon" class="logo" />
+      <nav class="quicksand-nav mang">
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contato</a>
+        <a href="login.html">Já tem uma conta?</a>
+        <a href="register.html">Registre-se</a>
+      </nav>
+    </header>
+    <div class = "usuarios">
+        <h2> Usuários</h2>
+        <table border = "1" id = "usersTable">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>CPF</th>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Tipo</th>
+                  <th>Senha</th>
+              </tr>
+          </thead>
+          <tbody >
+  
+          </tbody>
+      </table>
+      </div>
+      
+  
+      <script>
+          async function getApiData() {
+              const response = await fetch('http://localhost:3000/users', {
+                  method: 'GET',
+                
+              })
+              return response.json();
+          }
+          function genTable(data) {
+              var sel = document.querySelector('#usersTable');
+              sel.innerHTML += `<tr>
+                  <td>${data.id_usuario}</td>
+                  <td>${data.cpf}</td>
+                  <td>${data.nome}</td>
+                  <td>${data.email}</td>
+                  <td>${data.tipo}</td>
+                  <td>${data.senha}</td>
+              </tr>`
+          }
+         function getData() {
+              getApiData().then(data => {
+                  data.forEach(element => {
+                      genTable(element);
+                  });
+              })
+          }
+          getData();
+          
+      </script>
+</body>
+</html>
