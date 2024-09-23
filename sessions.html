@@ -24,8 +24,8 @@
       </nav>
     </header>
     <div class = "usuarios">
-        <h2> Usuários</h2>
-        <table border = "1" id = "usersTable">
+        <h2> Sessões </h2>
+        <table border = "1" id = "sessionsTable" class = "quicksand-nav">
           <thead>
               <tr>
                   <th>CPF</th>
@@ -34,9 +34,10 @@
                   <th>Tipo</th>
                   <th>Entrada</th>
                   <th>Saída</th>
+                  <th>Presença</th>
               </tr>
           </thead>
-          <tbody >
+          <tbody>
   
           </tbody>
       </table>
@@ -45,14 +46,22 @@
   
       <script>
           async function getApiData() {
-              const response = await fetch('http://localhost:3000/userSessions', {
+              const response = await fetch('http://localhost:3000/sessions', {
                   method: 'GET',
                 
               })
               return response.json();
           }
           function genTable(data) {
-              var sel = document.querySelector('#usersTable');
+              var sel = document.querySelector('#sessionsTable');
+              if (data.fim === null) {
+                data.fim = "Em aberto";
+              }
+              if (data.usuario_presente == 1) {
+                data.usuario_presente = "Sim"
+              } else {
+                data.usuario_presente = "Não"
+              }
               sel.innerHTML += `<tr>
                   <td>${data.cpf}</td>
                   <td>${data.nome}</td>
