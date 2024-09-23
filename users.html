@@ -28,12 +28,12 @@
         <table border = "1" id = "usersTable">
           <thead>
               <tr>
-                  <th>ID</th>
                   <th>CPF</th>
                   <th>Nome</th>
                   <th>Email</th>
                   <th>Tipo</th>
-                  <th>Senha</th>
+                  <th>Entrada</th>
+                  <th>Saída</th>
               </tr>
           </thead>
           <tbody >
@@ -45,7 +45,7 @@
   
       <script>
           async function getApiData() {
-              const response = await fetch('http://localhost:3000/users', {
+              const response = await fetch('http://localhost:3000/userSessions', {
                   method: 'GET',
                 
               })
@@ -54,12 +54,13 @@
           function genTable(data) {
               var sel = document.querySelector('#usersTable');
               sel.innerHTML += `<tr>
-                  <td>${data.id_usuario}</td>
                   <td>${data.cpf}</td>
                   <td>${data.nome}</td>
                   <td>${data.email}</td>
                   <td>${data.tipo}</td>
-                  <td>${data.senha}</td>
+                  <td>${data.inicio}</td>
+                  <td>${data.fim}</td>
+                  <td>${data.usuario_presente}</td>
               </tr>`
           }
          function getData() {
