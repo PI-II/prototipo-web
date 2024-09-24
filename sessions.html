@@ -1,86 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="stylesheet.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-    <title>TBA</title>
-  </head>
-  <body>
-    <header>
-      <img src="assets/dumbbell.png" alt="icon" class="logo" />
-      <nav class="quicksand-nav mang">
-        <a href="index.html">Home</a>
-        <a href="contact.html">Contato</a>
-        <a href="login.html">Já tem uma conta?</a>
-        <a href="register.html">Registre-se</a>
-      </nav>
-    </header>
-    <div class = "usuarios">
-        <h2> Sessões </h2>
-        <table border = "1" id = "sessionsTable" class = "quicksand-nav">
-          <thead>
-              <tr>
-                  <th>CPF</th>
-                  <th>Nome</th>
-                  <th>Email</th>
-                  <th>Tipo</th>
-                  <th>Entrada</th>
-                  <th>Saída</th>
-                  <th>Presença</th>
-              </tr>
-          </thead>
-          <tbody>
-  
-          </tbody>
-      </table>
-      </div>
-      
-  
-      <script>
-          async function getApiData() {
-              const response = await fetch('http://localhost:3000/sessions', {
-                  method: 'GET',
-                
-              })
-              return response.json();
-          }
-          function genTable(data) {
-              var sel = document.querySelector('#sessionsTable');
-              if (data.fim === null) {
-                data.fim = "Em aberto";
-              }
-              if (data.usuario_presente == 1) {
-                data.usuario_presente = "Sim"
-              } else {
-                data.usuario_presente = "Não"
-              }
-              sel.innerHTML += `<tr>
-                  <td>${data.cpf}</td>
-                  <td>${data.nome}</td>
-                  <td>${data.email}</td>
-                  <td>${data.tipo}</td>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+  <title>TBA</title>
+</head>
+
+<body>
+  <header>
+    <img src="assets/dumbbell.png" alt="icon" class="logo" />
+    <nav class="quicksand-nav mang">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contato</a>
+      <a href="login.html">Já tem uma conta?</a>
+      <a href="register.html">Registre-se</a>
+      <a href="sessions.html">Sessões</a>
+    </nav>
+  </header>
+  <div class="sessions">
+    <form method="post">
+      <label for="name">Início:</label>
+      <input type="datetime-local" id="inicio" name="inicio" placeholder="Horário de início da sessão" required>
+      <br>
+      <br>
+      <label for="fim">Fim(Deixar vazio caso não tenha terminado): </label>
+      <input type="datetime-local" id="fim" name="fim" placeholder="Horário de encerramento da sessão">
+      <br>
+      <br>
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" maxlength="11" required>
+      <br>
+      <br>
+      <input type="submit" value="Registrar" onclick="postData()">
+    </form>
+  </div>
+  <script>
+    async function postData() {
+      const response = await fetch('http://localhost:3000/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inicio: document.querySelector("#inicio").value,
+          fim: document.querySelector("#fim").value,
+          usuario: document.querySelector("#cpf").value,
+
+        })
+      })
+        .catch((error) => {
+          console.error('Request failed:', error);
+        });
+      return response.json();
+    }
+  </script>
+  <div>
+    <h2> Sessões </h2>
+    <table border="1" id="sessionsTable" class="quicksand-nav">
+      <thead>
+        <tr>
+          <th>Entrada</th>
+          <th>Saída</th>
+          <th>CPF</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <script>
+    async function getApiData() {
+      const response = await fetch('http://localhost:3000/sessions', {
+        method: 'GET',
+
+      })
+      return response.json();
+    }
+    function genTable(data) {
+      var sel = document.querySelector('#sessionsTable');
+      if (data.fim === null) {
+        data.fim = "Em aberto";
+      }
+      sel.innerHTML += `<tr>               
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
-                  <td>${data.usuario_presente}</td>
+                  <td>${data.usuario}</td>
               </tr>`
-          }
-         function getData() {
-              getApiData().then(data => {
-                  data.forEach(element => {
-                      genTable(element);
-                  });
-              })
-          }
-          getData();
-          
-      </script>
+    }
+    function getData() {
+      getApiData().then(data => {
+        data.forEach(element => {
+          genTable(element);
+        });
+      })
+    }
+    getData();
+
+  </script>
 </body>
+
 </html>
