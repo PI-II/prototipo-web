@@ -38,18 +38,22 @@
     </div>
     <script>
       async function login() {
-        
+        var cpf = null;
+        var senha = null;
+        cpf = document.querySelector('#cpf').value;
+        senha = document.querySelector('#password').value;
         const response = await fetch('http://localhost:3000/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            cpf: document.querySelector('#cpf').value,
-            senha: document.querySelector('#password').value,
+            cpf: cpf,
+            senha: senha,
           })
         })
         if (response != null) {
+          window.location.href ="sessions.html";
           return response.json();
         } else {
           alert("ERRO: Usuário não encontrado.")
