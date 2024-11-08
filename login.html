@@ -39,9 +39,9 @@
     </div>
     <script>
       async function login() {
-        var cpf = null;
+        var email = null;
         var senha = null;
-        cpf = document.querySelector('#cpf').value;
+        email = document.querySelector('#email').value;
         senha = document.querySelector('#password').value;
         const response = await fetch('http://localhost:3000/login', {
           method: 'POST',
@@ -49,17 +49,16 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            email: document.querySelector('#email').value,
-            senha: document.querySelector('#password').value,
+            email: email,
+            senha: senha,
           })
         })
-        if (response.status === 200) {
-          window.location.href = 'sessions.html'
-        } else {
-          alert('Email ou senha incorretos')
-        }
-        
+        if ( response.status === 200 ) {
+          window.location.href = 'sessions.html';
+      } else {
+          alert('Usuário ou senha inválidos');
       }
+    }
     </script>
     
 </body>
