@@ -72,6 +72,8 @@
         }
       });
       async function postData() {
+        let cpf = document.querySelector("#cpf").value;
+        let format = cpf.replace(/\.|-/gm, '');
         const response = await fetch("http://localhost:3000/session", {
           method: "POST",
           headers: {
@@ -80,7 +82,7 @@
           body: JSON.stringify({
             inicio: document.querySelector("#inicio").value,
             fim: document.querySelector("#fim").value,
-            usuario: document.querySelector("#cpf").value,
+            usuario: format,
           }),
         }).catch((error) => {
           console.error("Request failed:", error);
