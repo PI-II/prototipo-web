@@ -29,28 +29,20 @@
     <h1>Que bom ter você aqui!</h1>
     <p>Por favor, preencha o formulário abaixo para se registrar.</p>
     <div>
-      <form method="post">
+      <form method="post" id="cadastro">
         <label for="name">Nome:</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
+        <input type="text" id="name" name="name"
           placeholder="Insira seu nome"
           required
         />
-        <br />
-        <br />
+        <br>
+        <br>
         <label for="cpf">CPF:</label>
-        <input
-          type="text"
-          id="cpf"
-          name="cpf"
-          placeholder="insira seu CPF"
-          maxlength="14"
-          required
+        <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" minlength="14"
+          maxlength="14" required"
         />
-        <br />
-        <br />
+        <br>
+        <br>
         <label for="email">Email:</label>
         <input
           type="email"
@@ -83,33 +75,54 @@
         <p><a href="login.html">Já tem uma conta?</a></p>
       </form>
       <script>
+        async function checkavail() { 
+          const response = await fetch("http://localhost:3000/check", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              cpf: document.getElementById("#cpf").value,
+            })
+          })
+          if (response.status === 200) {
+            document.getElementById("#displayAval").value = "CPF disponível.";
+          } else {
+            document.getElementById("#displayAval").value = "CPF já registrado.";
+          }
+        }
+        
         //funcao para formatacao de CPF
         let cpfField = document.querySelector("#cpf");
         cpfField.addEventListener("keypress", () => {
-          if (cpf.value.length === 3 || cpf.value.length === 7) {
-            cpf.value += ".";
+          if (cpfField.value.length === 3 || cpfField.value.length === 7) {
+            cpfField.value += ".";
           }
-          if (cpf.value.length === 11) {
-            cpf.value += "-";
+          if (cpfField.value.length === 11) {
+            cpfField.value += "-";
           }
         });
+
+        function removeCpfFormatting(cpf) {
+          return cpf.replace(/\D/g, "");
+        }
         async function postData() {
           const email = document.querySelector("#email").value;
+          const cpf = document.querySelector("#cpf").value;
           const response = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              cpf: document.querySelector("#cpf").value,
-              nome: document.querySelector("#name").value,
+              cpf: cpf,
+              nome: document.getElementById("#name").value,
               email: email,
               tipo: document.querySelector('input[name="tipo"]:checked').value,
-              senha: document.querySelector("#password").value,
+              senha: document.getElementById("#password").value,
             }),
           }).catch((error) => {
             console.error("Request failed:", error);
-            window.location.href = "index.html";
           });
           console.log(response);
           return response.json();
