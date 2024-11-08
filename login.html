@@ -39,7 +39,10 @@
     </div>
     <script>
       async function login() {
-        
+        var cpf = null;
+        var senha = null;
+        cpf = document.querySelector('#cpf').value;
+        senha = document.querySelector('#password').value;
         const response = await fetch('http://localhost:3000/login', {
           method: 'POST',
           headers: {
