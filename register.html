@@ -75,7 +75,7 @@
         <p><a href="login.html">Já tem uma conta?</a></p>
       </form>
       <script>
-        async function checkavail() { 
+        /*async function checkavail() { 
           const response = await fetch("http://localhost:3000/check", {
             method: "POST",
             headers: {
@@ -90,9 +90,9 @@
           } else {
             document.getElementById("#displayAval").value = "CPF já registrado.";
           }
-        }
+        }*/
         
-        //funcao para formatacao de CPF
+        //formatacao de CPF
         let cpfField = document.querySelector("#cpf");
         cpfField.addEventListener("keypress", () => {
           if (cpfField.value.length === 3 || cpfField.value.length === 7) {
@@ -103,23 +103,22 @@
           }
         });
 
-        function removeCpfFormatting(cpf) {
-          return cpf.replace(/\D/g, "");
-        }
+        
         async function postData() {
           const email = document.querySelector("#email").value;
-          const cpf = document.querySelector("#cpf").value;
+          let cpf = document.querySelector("#cpf").value;
+          let format = cpf.replace(/\.|-/gm, '');
           const response = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              cpf: cpf,
-              nome: document.getElementById("#name").value,
+              cpf: format,
+              nome: document.getElementById("name").value,
               email: email,
               tipo: document.querySelector('input[name="tipo"]:checked').value,
-              senha: document.getElementById("#password").value,
+              senha: document.getElementById("password").value,
             }),
           }).catch((error) => {
             console.error("Request failed:", error);
