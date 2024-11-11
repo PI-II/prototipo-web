@@ -39,7 +39,7 @@
         <br>
         <label for="cpf">CPF:</label>
         <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" minlength="14"
-          maxlength="14" required"
+          maxlength="14" required onfocus"
         />
         <br>
         <br>
@@ -75,7 +75,7 @@
         <p><a href="login.html">Já tem uma conta?</a></p>
       </form>
       <script>
-        /*async function checkavail() { 
+        async function checkavail() { 
           const response = await fetch("http://localhost:3000/check", {
             method: "POST",
             headers: {
@@ -90,7 +90,7 @@
           } else {
             document.getElementById("#displayAval").value = "CPF já registrado.";
           }
-        }*/
+        }
         
         //formatacao de CPF
         let cpfField = document.querySelector("#cpf");
@@ -107,6 +107,7 @@
         async function postData() {
           const email = document.querySelector("#email").value;
           let cpf = document.querySelector("#cpf").value;
+          let tipo = document.querySelector('input[name="tipo"]:checked').value;
           let format = cpf.replace(/\.|-/gm, '');
           const response = await fetch("http://localhost:3000/users", {
             method: "POST",
@@ -117,13 +118,20 @@
               cpf: format,
               nome: document.getElementById("name").value,
               email: email,
-              tipo: document.querySelector('input[name="tipo"]:checked').value,
+              tipo: tipo,
               senha: document.getElementById("password").value,
             }),
           }).catch((error) => {
             console.error("Request failed:", error);
           });
           console.log(response);
+          if (tipo === "Gerente" && response.status === 200) {
+            window.location.href = 'success.html';
+          } else if (tipo === "Aluno" && response.status === 200) {
+            window.location.href = 'sessions.html';
+          } else {
+            window.location.href = 'index.html';
+          }
           return response.json();
         }
       </script>
