@@ -107,6 +107,7 @@
         async function postData() {
           const email = document.querySelector("#email").value;
           let cpf = document.querySelector("#cpf").value;
+          let tipo = document.querySelector('input[name="tipo"]:checked').value;
           let format = cpf.replace(/\.|-/gm, '');
           const response = await fetch("http://localhost:3000/users", {
             method: "POST",
@@ -117,13 +118,20 @@
               cpf: format,
               nome: document.getElementById("name").value,
               email: email,
-              tipo: document.querySelector('input[name="tipo"]:checked').value,
+              tipo: tipo,
               senha: document.getElementById("password").value,
             }),
           }).catch((error) => {
             console.error("Request failed:", error);
           });
           console.log(response);
+          if (tipo === "Gerente" && response.status === 200) {
+            window.location.href = 'success.html';
+          } else if (tipo === "Aluno" && response.status === 200) {
+            window.location.href = 'sessions.html';
+          } else {
+            window.location.href = 'index.html';
+          }
           return response.json();
         }
       </script>

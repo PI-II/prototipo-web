@@ -1,19 +1,18 @@
 <!--Página de login-->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+  <title>Login</title>
 </head>
+
 <body>
   <header>
     <img src="assets/dumbbell.png" alt="icon" class="logo" />
@@ -25,41 +24,50 @@
       <a href="sessions.html">Sessões</a>
     </nav>
   </header>
-    <div>
-        <form method="post">
-            <label for="Email">Email:</label>
-            <input type="text" id="email" name="email" placeholder="Insira seu email" required> 
-            <br>
-            <br> 
-            <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" placeholder="insira sua senha" required>
-            <br>
-            <br>    
-            <input type="submit" value="Registrar" onclick="login()">
-    </div>
-    <script>
-      async function login() {
-        var email = null;
-        var senha = null;
-        email = document.querySelector('#email').value;
-        senha = document.querySelector('#password').value;
-        const response = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email,
-            senha: senha,
-          })
+  <div>
+    <form method="post">
+      <label for="Email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="Insira seu email" required>
+      <br>
+      <br>
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" placeholder="insira sua senha" required>
+      <br>
+      <br>
+      <input type="submit" value="Registrar" onclick="login()">
+  </div>
+  <script>
+    async function getApiData() {
+      let email = document.querySelector('#email').value;
+      let senha = document.querySelector('#password').value;
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          senha: senha,
         })
-        if ( response.status === 200 ) {
-          window.location.href = 'sessions.html';
-      } else {
-          alert('Usuário ou senha inválidos');
-      }
+      })
+      return response.json();
     }
-    </script>
-    
+    function getTipo(data) {
+      var tipo = data.tipo;
+      return tipo;
+    }
+    function login() {
+      getApiData().then((data) => {
+        data.forEach((element) => {
+          alert(getTipo(element));
+        })
+      })
+      
+    }
+
+
+  </script>
+
 </body>
+
 </html>
