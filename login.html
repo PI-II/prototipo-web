@@ -25,7 +25,7 @@
     </nav>
   </header>
   <div>
-    <form method="post">
+    <form method="post" id="login">
       <label for="Email">Email:</label>
       <input type="text" id="email" name="email" placeholder="Insira seu email" required>
       <br>
@@ -34,9 +34,15 @@
       <input type="password" id="password" name="password" placeholder="insira sua senha" required>
       <br>
       <br>
-      <input type="submit" value="Registrar" onclick="login()">
+      <input type="submit" value="Registrar">
+    </form>
   </div>
   <script>
+    let form = document.querySelector('#login');
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      login();
+    })
     async function getApiData() {
       let email = document.querySelector('#email').value;
       let senha = document.querySelector('#password').value;
@@ -59,9 +65,11 @@
     //alo
     function login() {
       getApiData().then((data) => {
-        data.forEach((element) => {
-          alert(getTipo(element));
-        })
+        if (data[0].tipo === "Gerente") {
+          window.location.href = 'index.html';
+        } else {
+          window.location.href = 'success.html';
+        }
       })
       
     }

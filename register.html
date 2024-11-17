@@ -75,6 +75,11 @@
         <p><a href="login.html">Já tem uma conta?</a></p>
       </form>
       <script>
+        let form = document.querySelector('#cadastro');
+      form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      checkavail();
+    })
         async function checkavail() { 
           const response = await fetch("http://localhost:3000/check", {
             method: "POST",

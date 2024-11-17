@@ -26,70 +26,12 @@
         <a href="sessions.html">Sessões</a>
       </nav>
     </header>
-    <div class="sessions">
+    <div id="formUser">
       <form method="post">
-        <label for="name">Início:</label>
-        <input
-          type="datetime-local"
-          id="inicio"
-          name="inicio"
-          placeholder="Horário de início da sessão"
-          required
-        />
-        <br />
-        <br />
-        <label for="fim">Fim(Deixar vazio caso não tenha terminado): </label>
-        <input
-          type="datetime-local"
-          id="fim"
-          name="fim"
-          placeholder="Horário de encerramento da sessão"
-        />
-        <br />
-        <br />
-        <label for="cpf">CPF:</label>
-        <input
-          type="text"
-          id="cpf"
-          name="cpf"
-          placeholder="insira seu CPF"
-          maxlength="14"
-          required
-        />
-        <br />
-        <br />
-        <input type="submit" value="Registrar" onclick="postData()" />
+        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF." minlength="14" maxlength="14" required onfocus>
+        <input type="submit">
       </form>
     </div>
-    <script>
-      let cpfField = document.querySelector("#cpf");
-      cpfField.addEventListener("keypress", () => {
-        if (cpf.value.length === 3 || cpf.value.length === 7) {
-          cpf.value += ".";
-        }
-        if (cpf.value.length === 11) {
-          cpf.value += "-";
-        }
-      });
-      async function postData() {
-        let cpf = document.querySelector("#cpf").value;
-        let format = cpf.replace(/\.|-/gm, '');
-        const response = await fetch("http://localhost:3000/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inicio: document.querySelector("#inicio").value,
-            fim: document.querySelector("#fim").value,
-            usuario: format,
-          }),
-        }).catch((error) => {
-          console.error("Request failed:", error);
-        });
-        return response.json();
-      }
-    </script>
     <div>
       <h2>Sessões</h2>
       <table border="1" id="sessionsTable" class="quicksand-nav">
