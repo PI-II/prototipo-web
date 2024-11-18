@@ -40,7 +40,7 @@
         <label for="cpf">CPF:</label>
         <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" minlength="14"
           maxlength="14" required onfocus"
-        />
+        /> <p id="verif"></p>
         <br>
         <br>
         <label for="email">Email:</label>
@@ -53,7 +53,7 @@
         />
         <br />
         <br />
-        Tipo:<br />
+        Tipo:
         <label for="tipo-ger">Gerente</label>
         <input type="checkbox" id="tipo-ger" name="tipo" value="Gerente" />
         <label for="tipo-al">Aluno</label>
@@ -91,9 +91,12 @@
           })
         
           if (response.status === 200) {
-            alert("CPF disponível.");
+            document.getElementById('verif').style.color = "green";
+            document.getElementById('verif').innerHTML = "CPF disponível.";
           } else {
-            alert("CPF já registrado.");
+            document.getElementById('verif').style.color = "red";
+            document.getElementById('verif').innerHTML = "CPF já registrado.";
+            document.getElementById('cpf').focus();
           }
         }
         )
@@ -132,9 +135,9 @@
           });
           console.log(response);
           if (tipo === "Gerente" && response.status === 200) {
-            window.location.href = 'success.html';
-          } else if (tipo === "Aluno" && response.status === 200) {
             window.location.href = 'sessions.html';
+          } else if (tipo === "Aluno" && response.status === 200) {
+            window.location.href = 'user_area.html';
           } else {
             window.location.href = 'index.html';
           }

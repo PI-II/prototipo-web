@@ -30,23 +30,50 @@
         <form method="post">
             <label for="inicio">
                 Marcar início da sessão:
-                <input type="datetime-local" name="inicio" id="inicio" value="Marcar início da sessão">
+                <!-- <input type="datetime-local" name="inicio" id="inicio" value="Marcar início da sessão"> -->
+                <input type="button"
             </label>
             <br>
             <br>
             <label for="fim">
                 Marcar fim da sessão:
-                <input type="datetime-local" name="fim" id="fim" value="Marcar fim da sessão">
+                <!-- <input type="datetime-local" name="fim" id="fim" value="Marcar fim da sessão"> -->
             </label>
             <br>
             <label for="usuario">
                 Usuário:
                 <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14">
-            </label>
-            <input type="submit" value="Registrar sessão" onclick="regSes()">
+            </label><p id="verif"></p>
+            <input type="submit" id="envia" value="Registrar sessão" onclick="regSes()">
         </form>
     </div>
     <script>
+        var campoCPF = document.querySelector("#cpf");
+        campoCPF.addEventListener("focusout", async (event) => {
+          var cpf = document.querySelector("#cpf").value;
+          var format = cpf.replace(/\.|-/gm, '');
+          
+            const response = await fetch("http://localhost:3000/check", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              cpf: format,
+            })
+          })
+        
+          if (response.status === 200) {
+            document.getElementById('verif').style.color = "red";
+            document.getElementById('verif').innerHTML = "CPF não registrado.";
+            document.getElementById('envia').focus();
+          } else {
+            document.getElementById('verif').style.color = "green";
+            document.getElementById('verif').innerHTML = "CPF válido.";
+          }
+        }
+        )
+
         let cpfField = document.querySelector("#cpf");
         cpfField.addEventListener("keypress", () => {
           if (cpfField.value.length === 3 || cpfField.value.length === 7) {
