@@ -1,5 +1,5 @@
 header {
-    background-color: rgba(226, 223, 26, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 20px;
 }
@@ -8,6 +8,9 @@ body {
     background-image: url(https://www.shutterstock.com/image-photo/blur-background-gym-fitness-center-600nw-2321682989.jpg);
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: "Quicksand", sans-serif;
+    color: white;
 }
 
 .info {
@@ -18,12 +21,18 @@ body {
     text-align: right;
 }
 
+a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
 a:visited {
     color: black;
 }
 
 a:hover {
-    color: white;
+    color: rgb(238, 161, 60);
 }
 
 .quicksand-nav {
@@ -40,19 +49,28 @@ a:hover {
 }
 
 div {
-    background-color: rgba(226, 223, 26, 0.9);
-    color: black;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
     padding: 20px;
     text-align: center;
     width: 50%;
     margin-left: auto;
     margin-right: auto;
-    border: 10px solid rgba(0, 0, 0, 0.9);
+    border: 3px solid rgb(238, 161, 60);
     border-radius: 25px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 input[type="submit"] {
-   border-radius: 25px;
+    background-color: rgb(238, 161, 60);
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 input[type="submit"]:hover {
@@ -61,14 +79,31 @@ input[type="submit"]:hover {
     transition: background-color 0.5s ease;
 }
 
+input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgb(238, 161, 60);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+}
+
+
 label {
-    position: relative;
-    transform: translateY(10px);
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: rgb(238, 161, 60);
 }
 
 table {
     background-color: rgba(255, 255, 255, 0.9);
     margin: auto;
+    width: 100%;
+    border-collapse: collapse;
+    color: rgb(0, 0, 0);
 }
 
 #usersTable {
@@ -76,4 +111,29 @@ table {
     border-collapse: collapse;
     margin-left: auto;
     margin-right: auto;
+    color: rgb(0, 0, 0); 
+}
+@media (max-width: 600px) {
+    div {
+        width: 90%;
+    }
+
+    .mang {
+        text-align: center;
+    }
+}
+
+.bem-vindo {
+    color: rgb(238, 161, 60);
+    text-align: center;
+    font-size: 2.5rem; 
+    margin-top: 20px;
+}
+
+.texto-intro{
+    color: rgb(0, 0, 0);
+    text-align: center; 
+    font-size: 1.2rem;
+    margin: 20px auto;
+    width: 80%; 
 }

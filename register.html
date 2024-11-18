@@ -75,28 +75,30 @@
         <p><a href="login.html">Já tem uma conta?</a></p>
       </form>
       <script>
-        let form = document.querySelector('#cadastro');
-      form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      checkavail();
-    })
-        async function checkavail() { 
-          const response = await fetch("http://localhost:3000/check", {
+          var campoCPF = document.querySelector("#cpf");
+        campoCPF.addEventListener("focusout", async (event) => {
+          var cpf = document.querySelector("#cpf").value;
+          var format = cpf.replace(/\.|-/gm, '');
+          
+            const response = await fetch("http://localhost:3000/checkcpf", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              cpf: document.getElementById("#cpf").value,
+              cpf: format,
             })
           })
+        
           if (response.status === 200) {
-            document.getElementById("#displayAval").value = "CPF disponível.";
+            alert("CPF disponível.");
           } else {
-            document.getElementById("#displayAval").value = "CPF já registrado.";
+            alert("CPF já registrado.");
           }
         }
-        
+        )
+     
+
         //formatacao de CPF
         let cpfField = document.querySelector("#cpf");
         cpfField.addEventListener("keypress", () => {
@@ -108,7 +110,6 @@
           }
         });
 
-        
         async function postData() {
           const email = document.querySelector("#email").value;
           let cpf = document.querySelector("#cpf").value;
