@@ -80,7 +80,7 @@
           var cpf = document.querySelector("#cpf").value;
           var format = cpf.replace(/\.|-/gm, '');
           
-            const response = await fetch("http://localhost:3000/checkcpf", {
+            const response = await fetch("http://localhost:3000/check", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
