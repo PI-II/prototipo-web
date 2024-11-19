@@ -27,22 +27,41 @@
   <div>
     <form method="post" id="login">
       <label for="Email">Email:</label>
-      <input type="text" id="email" name="email" placeholder="Insira seu email" required>
+      <input type="text" id="email" name="email" placeholder="Insira seu email" required> <p id="verif"></p>
       <br>
       <br>
       <label for="password">Senha:</label>
       <input type="password" id="password" name="password" placeholder="insira sua senha" required>
       <br>
       <br>
-      <input type="submit" value="Registrar">
+      <input type="submit" id="envia" value="Registrar">
     </form>
   </div>
   <script>
-    let form = document.querySelector('#login');
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      login();
-    })
+        var email = document.querySelector("#email");
+        email.addEventListener("focusout", async (event) => {
+          
+            const response = await fetch("http://localhost:3000/checkemail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: document.querySelector('#email').value,
+            })
+          })
+        
+          if (response.status === 200) {
+            document.getElementById('verif').style.color = "red";
+            document.getElementById('verif').innerHTML = "e-mail não registrado.";
+            document.getElementById('envia').focus();
+          } else {
+            document.getElementById('verif').style.color = "green";
+            document.getElementById('verif').innerHTML = "e-mail válido.";
+          }
+        }
+        )
+
     async function getApiData() {
       let email = document.querySelector('#email').value;
       let senha = document.querySelector('#password').value;
@@ -60,6 +79,7 @@
     }
     function getTipo(data) {
       var tipo = data.tipo;
+      alert(tipo);
       return tipo;
     }
     //alo
@@ -68,11 +88,19 @@
         if (data[0].tipo === "Gerente") {
           window.location.href = 'index.html';
         } else {
-          window.location.href = 'success.html';
+          window.location.href = 'user_area.html';
         }
       })
       
     }
+
+    
+    let form = document.querySelector('#login');
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      login();
+    })
+
 
 
   </script>

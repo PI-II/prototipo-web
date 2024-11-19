@@ -80,7 +80,7 @@
           var cpf = document.querySelector("#cpf").value;
           var format = cpf.replace(/\.|-/gm, '');
           
-            const response = await fetch("http://localhost:3000/check", {
+            const response = await fetch("http://localhost:3000/checkcpf", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -95,7 +95,7 @@
             document.getElementById('verif').innerHTML = "CPF disponível.";
           } else {
             document.getElementById('verif').style.color = "red";
-            document.getElementById('verif').innerHTML = "CPF já registrado.";
+            document.getElementById('verif').innerHTML = "CPF inválido.";
             document.getElementById('cpf').focus();
           }
         }
