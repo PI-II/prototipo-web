@@ -11,8 +11,13 @@
   <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 </head>
-
-<body>
+<script>
+  function setup() {
+    document.getElementById('cpf').focus();
+    document.getElementById('inibtn').style.display = "none";
+  }
+</script>
+<body onload="">
   <header>
     <img src="assets/dumbbell.png" alt="icon" class="logo" />
     <nav class="quicksand-nav mang">
@@ -26,6 +31,12 @@
   <h1>Cadastro de sessão</h1>
   <div>
     <form method="post">
+      <label for="usuario">
+        Usuário:
+        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" />
+      </label>
+      <br>
+      <br>
       <label for="inicio">
         Marcar início da sessão:
         <input type="datetime-local" name="inicio" id="inicio" value="Marcar início da sessão" readonly />
@@ -33,10 +44,12 @@
       </label>
       <br>
       <br>
-      <label for="usuario">
-        Usuário:
-        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" />
+      <label for="fim">
+        <input type="datetime-local" name="fim" id="fim" readonly />
       </label>
+      <br>
+      <br>
+
       <p id="verif"></p>
       <input type="submit" id="envia" value="Registrar sessão" onclick="regSes()" />
     </form>
@@ -55,6 +68,18 @@
       var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 
       document.getElementById("inicio").value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    }
+    function setFim() {
+      fim = Date.now();
+      var date = new Date(fim);
+
+      var hours = date.getHours();
+      var minutes = "0" + date.getMinutes();
+      var seconds = "0" + date.getSeconds();
+
+      var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+      document.getElementById("fim").value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
     }
 
     var campoCPF = document.querySelector("#cpf");
@@ -76,11 +101,12 @@
         document.getElementById("envia").removeAttribute("disabled");
         document.getElementById("verif").style.color = "green";
         document.getElementById("verif").innerHTML = "CPF válido.";
+        document.getElementById('inibtn').style.display = "block";
       } else {
         document.getElementById("verif").style.color = "red";
         document.getElementById("verif").innerHTML = "CPF inválido.";
         document.getElementById("cpf").focus();
-        document.getElementById("envia").setAttribute("disabled","disabled");
+        document.getElementById("envia").setAttribute("disabled", "disabled");
       }
     });
 
@@ -125,31 +151,58 @@
   </div>
 
   <script>
-    async function getApiData() {
-      const response = await fetch("http://localhost:3000/sessions", {
-        method: "GET",
+    async function getSes() {
+      let cpf = document.querySelector("#cpf").value;
+      let format = cpf.replace(/\.|-/gm, "");
+      const response = await fetch("http://localhost:3000/user/sessions", {
+        method: "POST",
+        body: JSON.stringify({
+          usuario: format,
+        }),
       });
       return response.json();
     }
     function genTable(data) {
       var sel = document.querySelector("#sessionsTable");
       if (data.fim === null) {
-        data.fim = "Em aberto";
+        data.fim = "<input type='button' value='Finalizar' onclick='endSes()'>";
       }
       sel.innerHTML += `<tr>               
+                <td>${data.id}</td>
                 <td>${data.inicio}</td>
                 <td>${data.fim}</td>
                 <td>${data.usuario}</td>
             </tr>`;
     }
     function getData() {
-      getApiData().then((data) => {
+      getSes().then((data) => {
         data.forEach((element) => {
           genTable(element);
         });
       });
     }
-    getData();
+
+
+    async function endSes() {
+      setFim();
+      setTimeout(async () => {
+        var cpf = document.querySelector("#cpf").value;
+        var format = cpf.replace(/\.|-/gm, "");
+
+        const response = await fetch("http://localhost:3000/finish", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fim: document.querySelector('#fim').value,
+            usuario: format,
+          }),
+        });
+
+        console.log(response.status, await response.json());
+      }, 500);
+    }
   </script>
 </body>
 
