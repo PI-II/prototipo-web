@@ -1,193 +1,182 @@
 <!--Página de cadastro-->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="stylesheet.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-    <title>Registre-se</title>
-  </head>
 
-  <body>
-    <header>
-      <img src="assets/dumbbell.png" alt="icon" class="logo" />
-      <nav class="quicksand-nav mang">
-        <a href="index.html">Home</a>
-        <a href="contact.html">Contato</a>
-        <a href="login.html">Já tem uma conta?</a>
-        <a href="register.html">Registre-se</a>
-        <a href="sessions.html">Sessões</a>
-      </nav>
-    </header>
-    <h1>Que bom ter você aqui!</h1>
-    <p>Por favor, preencha o formulário abaixo para se registrar.</p>
-    <div>
-      <form method="post" id="cadastro">
-        <label for="name">Nome:</label>
-        <input type="text" id="name" name="name"
-          placeholder="Insira seu nome"
-          required
-        />
-        <br>
-        <br>
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" minlength="14"
-          maxlength="14" required onfocus"
-        /> <p id="verif"></p>
-        <br>
-        <br>
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="insira seu email"
-          required
-        />
-        <br />
-        <br />
-        Tipo:
-        <label for="tipo-ger">Gerente</label>
-        <input type="checkbox" id="tipo-ger" name="tipo" value="Gerente" />
-        <label for="tipo-al">Aluno</label>
-        <input type="checkbox" id="tipo-al" name="tipo" value="Aluno" />
-        <br />
-        <br />
-        <label for="password">Senha:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="insira sua senha"
-          required
-        />
-        <br />
-        <br />
-        <input type="submit" value="Registrar" onclick="postData()" />
-        <br />
-        <p><a href="login.html">Já tem uma conta?</a></p>
-      </form>
-      <script>
-          var campoCPF = document.querySelector("#cpf");
-        campoCPF.addEventListener("focusout", async (event) => {
-          var cpf = document.querySelector("#cpf").value;
-          var format = cpf.replace(/\.|-/gm, '');
-          
-            const response = await fetch("http://localhost:3000/checkcpf", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              cpf: format,
-            })
-          })
-        
-          if (response.status === 200) {
-            document.getElementById('verif').style.color = "green";
-            document.getElementById('verif').innerHTML = "CPF disponível.";
-          } else {
-            document.getElementById('verif').style.color = "red";
-            document.getElementById('verif').innerHTML = "CPF inválido.";
-            document.getElementById('cpf').focus();
-          }
-        }
-        )
-     
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+  <title>Registre-se</title>
+</head>
 
-        //formatacao de CPF
-        let cpfField = document.querySelector("#cpf");
-        cpfField.addEventListener("keypress", () => {
-          if (cpfField.value.length === 3 || cpfField.value.length === 7) {
-            cpfField.value += ".";
-          }
-          if (cpfField.value.length === 11) {
-            cpfField.value += "-";
-          }
-        });
-
-        async function postData() {
-          const email = document.querySelector("#email").value;
-          let cpf = document.querySelector("#cpf").value;
-          let tipo = document.querySelector('input[name="tipo"]:checked').value;
-          let format = cpf.replace(/\.|-/gm, '');
-          const response = await fetch("http://localhost:3000/users", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              cpf: format,
-              nome: document.getElementById("name").value,
-              email: email,
-              tipo: tipo,
-              senha: document.getElementById("password").value,
-            }),
-          }).catch((error) => {
-            console.error("Request failed:", error);
-          });
-          console.log(response);
-          if (tipo === "Gerente" && response.status === 200) {
-            window.location.href = 'sessions.html';
-          } else if (tipo === "Aluno" && response.status === 200) {
-            window.location.href = 'user_area.html';
-          } else {
-            window.location.href = 'index.html';
-          }
-          return response.json();
-        }
-      </script>
-    </div>
-
-    <div class="usuarios">
-      <h2>Usuários</h2>
-      <table border="1" id="usersTable">
-        <thead>
-          <tr>
-            <th>CPF</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo</th>
-            <th>Senha</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
+<body>
+  <header>
+    <img src="assets/dumbbell.png" alt="icon" class="logo" />
+    <nav class="quicksand-nav mang">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contato</a>
+      <a href="login.html">Já tem uma conta?</a>
+      <a href="register.html">Registre-se</a>
+      <a href="sessions.html">Sessões</a>
+    </nav>
+  </header>
+  <h1>Que bom ter você aqui!</h1>
+  <p>Por favor, preencha o formulário abaixo para se registrar.</p>
+  <div>
+    <form method="post" id="cadastro">
+      <label for="name">Nome:</label>
+      <input type="text" id="name" name="name" placeholder="Insira seu nome" required />
+      <br />
+      <br />
+      <label for="cpf">CPF*:</label>
+      <input type="text" id="cpf" name="cpf" placeholder="insira seu CPF" minlength="14" maxlength="14" required
+        onfocus" />
+      <p id="verif"></p>
+      <br />
+      <br />
+      <label for="email">Email*:</label>
+      <input type="email" id="email" name="email" placeholder="insira seu email" required />
+      <br />
+      <br />
+      Tipo:
+      <label for="tipo-ger">Gerente</label>
+      <input type="checkbox" id="tipo-ger" name="tipo" value="Gerente" />
+      <label for="tipo-al">Aluno</label>
+      <input type="checkbox" id="tipo-al" name="tipo" value="Aluno" />
+      <br />
+      <br />
+      <label for="password">Senha*:</label>
+      <input type="password" id="password" name="password" placeholder="insira sua senha" required />
+      <p id="verifsenha"></p>
+      <br />
+      <br />
+      <input type="submit" id="submitbtn" value="Registrar" onclick="event.preventDefault(); postData();"/>
+      <br />
+      <p><a href="login.html">Já tem uma conta?</a></p>
+    </form>
     <script>
-      async function getApiData() {
-        const response = await fetch("http://localhost:3000/users", {
-          method: "GET",
+      
+      var campoCPF = document.querySelector("#cpf");
+      campoCPF.addEventListener("focusout", async (event) => {
+        var cpf = document.querySelector("#cpf").value;
+        var format = cpf.replace(/\.|-/gm, "");
+        const response = await fetch("http://localhost:3000/checkcpf", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cpf: format,
+          }),
         });
+
+        if (response.status === 200) {
+          document.getElementById("verif").style.color = "green";
+          document.getElementById("verif").innerHTML = "CPF disponível.";
+        } else {
+          document.getElementById("verif").style.color = "red";
+          document.getElementById("verif").innerHTML = "CPF inválido.";
+          document.getElementById("cpf").focus();
+        }
+      });
+
+      //formatacao de CPF
+      let cpfField = document.querySelector("#cpf");
+      cpfField.addEventListener("keypress", () => {
+        if (cpfField.value.length === 3 || cpfField.value.length === 7) {
+          cpfField.value += ".";
+        }
+        if (cpfField.value.length === 11) {
+          cpfField.value += "-";
+        }
+      });
+      async function postData() {
+        const email = document.querySelector("#email").value;
+        let cpf = document.querySelector("#cpf").value;
+        let campoSenha = document.querySelector('#senha');
+        let senha = document.getElementById("password").value;
+        if (senha == null || senha == "") {
+          campoSenha.focus();
+          alert("erro"); 
+        }
+        let tipo = document.querySelector('input[name="tipo"]:checked').value;
+        let format = cpf.replace(/\.|-/gm, "");
+        const response = await fetch("http://localhost:3000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cpf: format,
+            nome: document.getElementById("name").value,
+            email: email,
+            tipo: tipo,
+            senha: senha,
+          }),
+        }).catch((error) => {
+          console.error("Request failed:", error);
+        });
+        console.log(response);
+        if (tipo === "Gerente" && response.status === 200) {
+          window.location.href = "sessions.html";
+        } else if (tipo === "Aluno" && response.status === 200) {
+          window.location.href = "user_area.html";
+        } else {
+          window.location.href = "index.html";
+        }
         return response.json();
       }
+      
+    </script>
+  </div>
 
-      function genTable(data) {
-        var sel = document.querySelector("#usersTable");
-        sel.innerHTML += `<tr>
+  <div class="usuarios">
+    <h2>Usuários</h2>
+    <table border="1" id="usersTable">
+      <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Tipo</th>
+          <th>Senha</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    async function getApiData() {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "GET",
+      });
+      return response.json();
+    }
+
+    function genTable(data) {
+      var sel = document.querySelector("#usersTable");
+      sel.innerHTML += `<tr>
                   <td>${data.cpf}</td>
                   <td>${data.nome}</td>
                   <td>${data.email}</td>
                   <td>${data.tipo}</td>
                   <td>${data.senha}</td>
               </tr>`;
-      }
-      function getData() {
-        getApiData().then((data) => {
-          data.forEach((element) => {
-            genTable(element);
-          });
+    }
+    function getData() {
+      getApiData().then((data) => {
+        data.forEach((element) => {
+          genTable(element);
         });
-      }
-      getData();
-    </script>
-  </body>
+      });
+    }
+    getData();
+  </script>
+</body>
+
 </html>

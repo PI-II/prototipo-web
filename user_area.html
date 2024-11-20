@@ -1,144 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Página do Usuário</title>
-    <link rel="stylesheet" href="stylesheet.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <header>
-      <img src="assets/dumbbell.png" alt="icon" class="logo" />
-      <nav class="quicksand-nav mang">
-        <a href="index.html">Home</a>
-        <a href="contact.html">Contato</a>
-        <a href="login.html">Já tem uma conta?</a>
-        <a href="register.html">Registre-se</a>
-        <a href="sessions.html">Sessões</a>
-      </nav>
-    </header>
-    <h1>Cadastro de sessão</h1>
-    <div>
-      <form method="post">
-        <label for="inicio">
-          Marcar início da sessão:
-          <input
-            type="datetime-local"
-            name="inicio"
-            id="inicio"
-            value="Marcar início da sessão"
-            readonly
-          />
-          <input
-            type="button"
-            name="inibtn"
-            id="inibtn"
-            value="Iniciar"
-            onclick="setIni()"
-          />
-        </label>
-        <br />
-        <br />
-        <label for="fim">
-          Marcar fim da sessão:
-          <input
-            type="datetime-local"
-            name="fim"
-            id="fim"
-            placeholder="Marcar fim da sessão"
-            readonly
-          />
-          <input type="button" name="fimbtn" id="fimbtn" value="Finalizar" />
-        </label>
-        <br />
-        <label for="usuario">
-          Usuário:
-          <input
-            type="text"
-            name="cpf"
-            id="cpf"
-            placeholder="Insira seu CPF"
-            required
-            minlength="14"
-            maxlength="14"
-          />
-        </label>
-        <p id="verif"></p>
-        <input
-          type="submit"
-          id="envia"
-          value="Registrar sessão"
-          onclick="regSes()"
-        />
-      </form>
-    </div>
-    <script>
-      var inicio;
-      var fim;
-      function setIni() {
-        inicio = Date.now();
-        document.getElementById("inicio").value = inicio;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página do Usuário</title>
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+</head>
 
-      var campoCPF = document.querySelector("#cpf");
-      campoCPF.addEventListener("focusout", async (event) => {
-        var cpf = document.querySelector("#cpf").value;
-        var format = cpf.replace(/\.|-/gm, "");
+<body>
+  <header>
+    <img src="assets/dumbbell.png" alt="icon" class="logo" />
+    <nav class="quicksand-nav mang">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contato</a>
+      <a href="login.html">Já tem uma conta?</a>
+      <a href="register.html">Registre-se</a>
+      <a href="sessions.html">Sessões</a>
+    </nav>
+  </header>
+  <h1>Cadastro de sessão</h1>
+  <div>
+    <form method="post">
+      <label for="inicio">
+        Marcar início da sessão:
+        <input type="datetime-local" name="inicio" id="inicio" value="Marcar início da sessão" readonly />
+        <input type="button" name="inibtn" id="inibtn" value="Iniciar" onclick="setIni()" />
+      </label>
+      <br>
+      <br>
+      <label for="usuario">
+        Usuário:
+        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" />
+      </label>
+      <p id="verif"></p>
+      <input type="submit" id="envia" value="Registrar sessão" onclick="regSes()" />
+    </form>
+  </div>
+  <script>
+    var inicio;
+    var fim;
+    function setIni() {
+      inicio = Date.now();
+      var date = new Date(inicio);
 
-          const response1 = await fetch("http://localhost:3000/checkcpf", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              cpf: format,
-            }),
-          });
+      var hours = date.getHours();
+      var minutes = "0" + date.getMinutes();
+      var seconds = "0" + date.getSeconds();
 
-          if (response1.status === 200) {
-            document.getElementById("verif").style.color = "green";
-            document.getElementById("verif").innerHTML = "CPF válido.";
-          } else {
-            document.getElementById("verif").style.color = "red";
-            document.getElementById("verif").innerHTML = "CPF inválido.";
-            document.getElementById("cpf").focus();
-          }
-        });
-        
+      var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 
-      let cpfField = document.querySelector("#cpf");
-      cpfField.addEventListener("keypress", () => {
-        if (cpfField.value.length === 3 || cpfField.value.length === 7) {
-          cpfField.value += ".";
-        }
-        if (cpfField.value.length === 11) {
-          cpfField.value += "-";
-        }
+      document.getElementById("inicio").value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    }
+
+    var campoCPF = document.querySelector("#cpf");
+    campoCPF.addEventListener("focusout", async (event) => {
+      var cpf = document.querySelector("#cpf").value;
+      var format = cpf.replace(/\.|-/gm, "");
+
+      const response1 = await fetch("http://localhost:3000/cpfexists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cpf: format,
+        }),
       });
 
-      async function regSes() {
-        let cpf = document.querySelector("#cpf").value;
-        let format = cpf.replace(/\.|-/gm, "");
-        const response = await fetch("http://localhost:3000/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inicio: document.querySelector("#inicio").value,
-            fim: document.querySelector("#fim").value,
-            usuario: format,
-          }),
-        });
+      if (response1.status === 200) {
+        document.getElementById("envia").removeAttribute("disabled");
+        document.getElementById("verif").style.color = "green";
+        document.getElementById("verif").innerHTML = "CPF válido.";
+      } else {
+        document.getElementById("verif").style.color = "red";
+        document.getElementById("verif").innerHTML = "CPF inválido.";
+        document.getElementById("cpf").focus();
+        document.getElementById("envia").setAttribute("disabled","disabled");
       }
-    </script>
-  </body>
+    });
+
+
+    let cpfField = document.querySelector("#cpf");
+    cpfField.addEventListener("keypress", () => {
+      if (cpfField.value.length === 3 || cpfField.value.length === 7) {
+        cpfField.value += ".";
+      }
+      if (cpfField.value.length === 11) {
+        cpfField.value += "-";
+      }
+    });
+
+    async function regSes() {
+      let cpf = document.querySelector("#cpf").value;
+      let format = cpf.replace(/\.|-/gm, "");
+      const response = await fetch("http://localhost:3000/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inicio: document.querySelector("#inicio").value,
+          usuario: format,
+        }),
+      });
+    }
+  </script>
+  <div>
+    <h2>Sessões</h2>
+    <table border="1" id="sessionsTable" class="quicksand-nav">
+      <thead>
+        <tr>
+          <th>Entrada</th>
+          <th>Saída</th>
+          <th>CPF</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    async function getApiData() {
+      const response = await fetch("http://localhost:3000/sessions", {
+        method: "GET",
+      });
+      return response.json();
+    }
+    function genTable(data) {
+      var sel = document.querySelector("#sessionsTable");
+      if (data.fim === null) {
+        data.fim = "Em aberto";
+      }
+      sel.innerHTML += `<tr>               
+                <td>${data.inicio}</td>
+                <td>${data.fim}</td>
+                <td>${data.usuario}</td>
+            </tr>`;
+    }
+    function getData() {
+      getApiData().then((data) => {
+        data.forEach((element) => {
+          genTable(element);
+        });
+      });
+    }
+    getData();
+  </script>
+</body>
+
 </html>
