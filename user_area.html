@@ -29,7 +29,8 @@
     <form method="post">
       <label for="usuario">
         Usuário:
-        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" readonly>
+        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14"
+          readonly>
       </label>
       <p id="verif"></p>
       <br>
@@ -39,41 +40,68 @@
   </div>
   <div>
     <h2>Sessões</h2>
-    <table border="1" id="sessionsTable" class="quicksand-nav">
+    <table border="1" id="sessions" class="quicksand-nav">
       <thead>
         <tr>
           <th>ID</th>
           <th>Entrada</th>
           <th>Saída</th>
-          <th>CPF</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
   </div>
+</body>
 
-  <script>
+</html>
+<script>
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    var email = localStorage.getItem("email");
+    if (email) {
+      const response = await fetch("http://localhost:3000/searchemail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        })
+      });
+      if (response.status === 200) {
+        const data = await response.json();
+        var cpf = data;
+        for (var i = 0; i < data.length; i++) {
+          if (i === 3 || i === 7) {
+            data = data.slice(0, i) + "." + data.slice(i);
+          }
+          if (i === 11) {
+            data = data.slice(0, i) + "-" + data.slice(i);
+          }
+        }
+        document.getElementById("cpf").value = data;
+      }
+    }
     async function getSes() {
       let cpf = document.querySelector("#cpf").value;
       let format = cpf.replace(/\.|-/gm, "");
-      const response = await fetch("http://localhost:3000/user/sessions", {
-        method: "POST",
-        body: JSON.stringify({
-          usuario: format,
-        }),
+      const response = await fetch(`http://localhost:3000/user/sessions/${format}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       return response.json();
     }
     function genTable(data) {
-      var sel = document.querySelector("#sessionsTable");
-      if (data.fim === null) {
-        data.fim = "<input type='button' value='Finalizar' onclick='endSes()'>";
+      var sel = document.querySelector("#sessions tbody");
+      if (data.fim == null || data.fim == "") {
+        data.fim = "<input type='button' value='Finalizar' onclick=\"endSes(event)\">";
       }
-      sel.innerHTML += `<tr>               
-                <td>${data.id}</td>
+      sel.innerHTML += `<tr>    
+                <td>${data.id}</td>           
                 <td>${data.inicio}</td>
                 <td>${data.fim}</td>
-                <td>${data.usuario}</td>
             </tr>`;
     }
     function getData() {
@@ -81,80 +109,63 @@
         data.forEach((element) => {
           genTable(element);
         });
+      }).catch((error) => {
+        console.error("Erro:", error);
       });
     }
+    getData();
 
-    async function endSes() {
-      setFim();
-        var cpf = document.querySelector("#cpf").value;
-        var format = cpf.replace(/\.|-/gm, "");
 
-        const response = await fetch("http://localhost:3000/finish", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fim: document.querySelector('#fim').value,
-            usuario: format,
-          }),
-        });
-    }
-  </script>
-</body>
+  });
+  function setTime() {
+    var dateSes = new Date(Date.now());
+    let year = dateSes.getFullYear();
+    let month = String(dateSes.getMonth() + 1).padStart(2, '0');
+    let day = String(dateSes.getDate()).padStart(2, '0');
+    let hours = String(dateSes.getHours()).padStart(2, '0');
+    let minutes = String(dateSes.getMinutes()).padStart(2, '0');
+    let seconds = String(dateSes.getSeconds()).padStart(2, '0');
+    var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    return formattedDate;
+  }
 
-</html>
-<script>
-   var inicio;
-    var fim;
-    function setIni() {
-      inicio = new Date(Date.now());
-      alert(inicio.toTimeString());
-      return inicio.toDateString();
-      
-    }
-    
-  document.addEventListener("DOMContentLoaded", async function () {
-    var email = localStorage.getItem("email");
-    alert(email);
-      if (email) {
-        const response = await fetch("http://localhost:3000/searchemail", {
-          method: "POST",
-          headers: {
-        "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-        email: email,
-          })
-        });
-        if (response.status === 200) {
-          const data = await response.json();
-          var cpf = data;
-          for (var i = 0; i < data.length; i++) {
-            if (i === 3 || i === 7) {
-              data = data.slice(0, i) + "." + data.slice(i);
-            }
-            if (i === 11) {
-              data = data.slice(0, i) + "-" + data.slice(i);
-            }
-          }
-          document.getElementById("cpf").value = data;
-        }
-      }
-      });
-
-      async function regSes() {
-      let cpf = document.querySelector("#cpf").value;
-      let format = cpf.replace(/\.|-/gm, "");
+  async function regSes() {
+    let cpf = document.querySelector("#cpf").value;
+    let format = cpf.replace(/\.|-/gm, "");
+ 
+      let inicio = setTime();
       const response = await fetch("http://localhost:3000/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          inicio: setIni(),
+          inicio: inicio,
           usuario: format,
         }),
       });
+
+  }
+  async function endSes(event) {
+    var row = event.target.closest("tr");
+    var sessionId = row.cells[0].innerText;
+    let fim = setTime();
+    const response = await fetch("http://localhost:3000/finish", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fim: fim,
+        id: sessionId,
+      }),
+    });
+    if (response.status === 200) {
+      row.cells[2].innerHTML = fim;
+    } else {
+      console.error("Erro");
     }
+  }
+
+
 </script>
