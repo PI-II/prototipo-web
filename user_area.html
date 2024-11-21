@@ -11,12 +11,8 @@
   <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 </head>
-<script>
-  function setup() {
-    document.getElementById('cpf').focus();
-    document.getElementById('inibtn').style.display = "none";
-  }
-</script>
+
+
 <body onload="">
   <header>
     <img src="assets/dumbbell.png" alt="icon" class="logo" />
@@ -33,114 +29,20 @@
     <form method="post">
       <label for="usuario">
         Usuário:
-        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" />
+        <input type="text" name="cpf" id="cpf" placeholder="Insira seu CPF" required minlength="14" maxlength="14" readonly>
       </label>
-      <br>
-      <br>
-      <label for="inicio">
-        Marcar início da sessão:
-        <input type="datetime-local" name="inicio" id="inicio" value="Marcar início da sessão" readonly />
-        <input type="button" name="inibtn" id="inibtn" value="Iniciar" onclick="setIni()" />
-      </label>
-      <br>
-      <br>
-      <label for="fim">
-        <input type="datetime-local" name="fim" id="fim" readonly />
-      </label>
-      <br>
-      <br>
-
       <p id="verif"></p>
+      <br>
+      <br>
       <input type="submit" id="envia" value="Registrar sessão" onclick="regSes()" />
     </form>
   </div>
-  <script>
-    var inicio;
-    var fim;
-    function setIni() {
-      inicio = Date.now();
-      var date = new Date(inicio);
-
-      var hours = date.getHours();
-      var minutes = "0" + date.getMinutes();
-      var seconds = "0" + date.getSeconds();
-
-      var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-
-      document.getElementById("inicio").value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    }
-    function setFim() {
-      fim = Date.now();
-      var date = new Date(fim);
-
-      var hours = date.getHours();
-      var minutes = "0" + date.getMinutes();
-      var seconds = "0" + date.getSeconds();
-
-      var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-
-      document.getElementById("fim").value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    }
-
-    var campoCPF = document.querySelector("#cpf");
-    campoCPF.addEventListener("focusout", async (event) => {
-      var cpf = document.querySelector("#cpf").value;
-      var format = cpf.replace(/\.|-/gm, "");
-
-      const response1 = await fetch("http://localhost:3000/cpfexists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cpf: format,
-        }),
-      });
-
-      if (response1.status === 200) {
-        document.getElementById("envia").removeAttribute("disabled");
-        document.getElementById("verif").style.color = "green";
-        document.getElementById("verif").innerHTML = "CPF válido.";
-        document.getElementById('inibtn').style.display = "block";
-      } else {
-        document.getElementById("verif").style.color = "red";
-        document.getElementById("verif").innerHTML = "CPF inválido.";
-        document.getElementById("cpf").focus();
-        document.getElementById("envia").setAttribute("disabled", "disabled");
-      }
-    });
-
-
-    let cpfField = document.querySelector("#cpf");
-    cpfField.addEventListener("keypress", () => {
-      if (cpfField.value.length === 3 || cpfField.value.length === 7) {
-        cpfField.value += ".";
-      }
-      if (cpfField.value.length === 11) {
-        cpfField.value += "-";
-      }
-    });
-
-    async function regSes() {
-      let cpf = document.querySelector("#cpf").value;
-      let format = cpf.replace(/\.|-/gm, "");
-      const response = await fetch("http://localhost:3000/session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          inicio: document.querySelector("#inicio").value,
-          usuario: format,
-        }),
-      });
-    }
-  </script>
   <div>
     <h2>Sessões</h2>
     <table border="1" id="sessionsTable" class="quicksand-nav">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Entrada</th>
           <th>Saída</th>
           <th>CPF</th>
@@ -182,10 +84,8 @@
       });
     }
 
-
     async function endSes() {
       setFim();
-      setTimeout(async () => {
         var cpf = document.querySelector("#cpf").value;
         var format = cpf.replace(/\.|-/gm, "");
 
@@ -199,11 +99,62 @@
             usuario: format,
           }),
         });
-
-        console.log(response.status, await response.json());
-      }, 500);
     }
   </script>
 </body>
 
 </html>
+<script>
+   var inicio;
+    var fim;
+    function setIni() {
+      inicio = new Date(Date.now());
+      alert(inicio.toTimeString());
+      return inicio.toDateString();
+      
+    }
+    
+  document.addEventListener("DOMContentLoaded", async function () {
+    var email = localStorage.getItem("email");
+    alert(email);
+      if (email) {
+        const response = await fetch("http://localhost:3000/searchemail", {
+          method: "POST",
+          headers: {
+        "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+        email: email,
+          })
+        });
+        if (response.status === 200) {
+          const data = await response.json();
+          var cpf = data;
+          for (var i = 0; i < data.length; i++) {
+            if (i === 3 || i === 7) {
+              data = data.slice(0, i) + "." + data.slice(i);
+            }
+            if (i === 11) {
+              data = data.slice(0, i) + "-" + data.slice(i);
+            }
+          }
+          document.getElementById("cpf").value = data;
+        }
+      }
+      });
+
+      async function regSes() {
+      let cpf = document.querySelector("#cpf").value;
+      let format = cpf.replace(/\.|-/gm, "");
+      const response = await fetch("http://localhost:3000/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inicio: setIni(),
+          usuario: format,
+        }),
+      });
+    }
+</script>
