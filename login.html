@@ -1,110 +1,127 @@
 <!--Página de login-->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Login</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="stylesheet.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/x-icon" href="assets/dumbbell.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
-  <title>Login</title>
-</head>
-
-<body>
-  <header>
-    <img src="assets/dumbbell.png" alt="icon" class="logo" />
-    <nav class="quicksand-nav mang">
-      <a href="index.html">Home</a>
-      <a href="contact.html">Contato</a>
-      <a href="login.html">Já tem uma conta?</a>
-      <a href="register.html">Registre-se</a>
-      <a href="sessions.html">Sessões</a>
-    </nav>
-  </header>
-  <div>
-    <form method="post" id="login">
-      <label for="Email">Email:</label>
-      <input type="text" id="email" name="email" placeholder="Insira seu email" required> <p id="verif"></p>
-      <br>
-      <br>
-      <label for="password">Senha:</label>
-      <input type="password" id="password" name="password" placeholder="insira sua senha" required>
-      <br>
-      <br>
-      <input type="submit" id="envia" value="Registrar">
-    </form>
-  </div>
-  <script>
-        var email = document.querySelector("#email");
-        email.addEventListener("focusout", async (event) => {
-          
-            const response = await fetch("http://localhost:3000/checkemail", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: document.querySelector('#email').value,
-            })
-          })
-        
-          if (response.status === 200) {
-            document.getElementById('verif').style.color = "red";
-            document.getElementById('verif').innerHTML = "e-mail não registrado.";
-            document.getElementById('envia').focus();
-          } else {
-            document.getElementById('verif').style.color = "green";
-            document.getElementById('verif').innerHTML = "e-mail válido.";
-          }
+  <body>
+    <header>
+      <img src="assets/dumbbell.png" alt="icon" class="logo" />
+      <nav class="quicksand-nav mang">
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contato</a>
+        <a href="login.html">Já tem uma conta?</a>
+        <a href="register.html">Registre-se</a>
+        <a href="sessions.html">Sessões</a>
+      </nav>
+    </header>
+    <div>
+      <form method="post" id="login">
+        <label for="Email">Email:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="Insira seu email"
+          required
+        />
+        <p id="verif"></p>
+        <br />
+        <br />
+        <label for="password">Senha:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="insira sua senha"
+          required
+        />
+        <br />
+        <br />
+        <input type="submit" id="envia" value="Registrar" />
+      </form>
+    </div>
+    <script>
+      document.addEventListener("load", () => {
+        if (localStorage.getItem("tipo")) {
+          redirect(localStorage.getItem("tipo"));
         }
-        )
+      });
 
-    async function getApiData() {
-      let email = document.querySelector('#email').value;
-      let senha = document.querySelector('#password').value;
-      const response = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          senha: senha,
-        })
-      })
-      return response.json();
-    }
-    function getTipo(data) {
-      var tipo = data.tipo;
-      alert(tipo);
-      return tipo;
-    }
-    //alo
-    function login() {
-      getApiData().then((data) => {
-        if (data[0].tipo === "Gerente") {
-          window.location.href = 'index.html';
+      function redirect(tipo) {
+        if (tipo === "Gerente") {
+          window.location.href = "index.html";
         } else {
-          window.location.href = 'user_area.html';
+          window.location.href = "user_area.html";
         }
-      })
-      
-    }
+      }
 
-    
-    let form = document.querySelector('#login');
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      login();
-    })
+      var email = document.querySelector("#email");
+      email.addEventListener("focusout", async (event) => {
+        const response = await fetch("http://localhost:3000/checkemail", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: document.querySelector("#email").value,
+          }),
+        });
 
+        if (response.status === 200) {
+          document.getElementById("verif").style.color = "red";
+          document.getElementById("verif").innerHTML = "e-mail não registrado.";
+          document.getElementById("envia").focus();
+        } else {
+          document.getElementById("verif").style.color = "green";
+          document.getElementById("verif").innerHTML = "e-mail válido.";
+        }
+      });
 
+      async function getApiData() {
+        let email = document.querySelector("#email").value;
+        let senha = document.querySelector("#password").value;
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            senha: senha,
+          }),
+        });
+        return response.json();
+      }
+      function getTipo(data) {
+        var tipo = data.tipo;
+        alert(tipo);
+        return tipo;
+      }
+      //alo
+      function login() {
+        getApiData().then((data) => {
+          localStorage.setItem("tipo", data[0].tipo);
+          redirect(data[0].tipo);
+        });
+      }
 
-  </script>
-
-</body>
-
+      let form = document.querySelector("#login");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        login();
+      });
+    </script>
+  </body>
 </html>
