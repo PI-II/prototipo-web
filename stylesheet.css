@@ -146,3 +146,7 @@ table {
     margin: 20px auto;
     width: 80%; 
 }
+
+#weekLog{
+    background-color: rgb(238, 161, 60);
+}

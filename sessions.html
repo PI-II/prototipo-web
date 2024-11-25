@@ -29,6 +29,22 @@
       <table border="1" id="sessionsTable" class="quicksand-nav">
         <thead>
           <tr>
+            <th>ID</th>
+            <th>Entrada</th>
+            <th>Saída</th>
+            <th>CPF</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>Relatório Semanal</h2>
+      <table border="1" id="weekSessions" class="quicksand-nav">
+        <thead>
+          <tr>
+            <th>ID</th>
             <th>Entrada</th>
             <th>Saída</th>
             <th>CPF</th>
@@ -41,48 +57,92 @@
     <script>
       var general = "http://localhost:3000/sessions";
       var week = "http://localhost:3000/week";
-      async function getApiData() {
-        var dateSes = new Date(Date.now());
+      function getTodayDate() {
+      let dateSes = new Date(Date.now());
       let year = dateSes.getFullYear();
       let month = String(dateSes.getMonth() + 1).padStart(2, '0');
       let day = String(dateSes.getDate()).padStart(2, '0');
-      let hours = String(dateSes.getHours()).padStart(2, '0');
-      let minutes = String(dateSes.getMinutes()).padStart(2, '0');
-      let seconds = String(dateSes.getSeconds()).padStart(2, '0');
-      var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-      console.log(formattedDate);
+      var formattedDate = `${year}-${month}-${day}`;
+      
+      return formattedDate;
+    }
+
+    function getMonday() {
+      let mondayWeek = new Date(Date.now());
+      let monday = mondayWeek.getDay() || 7;
+      if (monday !== 1) {
+        mondayWeek.setHours(-24* (monday - 1));
+      }
+      let year = mondayWeek.getFullYear();
+      let month = String(mondayWeek.getMonth() + 1).padStart(2, '0');
+      let dayW = String(mondayWeek.getDate()).padStart(2,'0');
+      var formattedMonday = `${year}-${month}-${dayW}`;
+
+      return formattedMonday;
+    }
+      async function getWeekData() {
         const response = await fetch(week, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            inicio: "2024-11-21",
-            fim: "2024-11-21", //aaaa,
+            inicio: getMonday(),
+            fim: getTodayDate(), 
           }),
         });
         return response.json();
       }
+      async function getGeneralData() {
+        const response = await fetch(general, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        return response.json();
+      }
       
-      function genTable(data) {
+      function genGeneralTable(data) {
         var sel = document.querySelector("#sessionsTable");
         if (data.fim === null) {
           data.fim = "Em aberto";
         }
-        sel.innerHTML += `<tr>          
+        sel.innerHTML += `<tr>    
+                  <td>${data.id}</td>           
+                  <td>${data.inicio}</td>
+                  <td>${data.fim}</td>
+                  <td>${data.usuario}</td>
+              </tr>`;
+      }
+      function genWeekTable(data) {
+        var sel1 = document.querySelector("#weekSessions");
+        if (data.fim === null) {
+          data.fim = "Em aberto";
+        }
+        sel1.innerHTML += `<tr>   
+                  <td>${data.id}</td>       
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
                   <td>${data.usuario}</td>
               </tr>`;
       }
       function getData() {
-        getApiData().then((data) => {
+        getGeneralData().then((data) => {
           data.forEach((element) => {
-            genTable(element);
+            genGeneralTable(element);
+          });
+        });
+      }
+      function getWData() {
+        getWeekData().then((data) => {
+          data.forEach((element) => {
+            genWeekTable(element);
           });
         });
       }
       getData();
+      getWData();
     </script>
   </body>
 </html>

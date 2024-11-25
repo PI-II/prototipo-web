@@ -132,7 +132,6 @@
   async function regSes() {
     let cpf = document.querySelector("#cpf").value;
     let format = cpf.replace(/\.|-/gm, "");
- 
       let inicio = setTime();
       const response = await fetch("http://localhost:3000/session", {
         method: "POST",
