@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <title>TBA</title>
+    <title>Consultar sessões</title>
   </head>
 
   <body>
@@ -20,10 +20,8 @@
       <img src="assets/dumbbell.png" alt="icon" class="logo" />
       <nav class="quicksand-nav mang">
         <a href="index.html">Home</a>
-        <a href="contact.html">Contato</a>
-        <a href="login.html">Já tem uma conta?</a>
-        <a href="register.html">Registre-se</a>
-        <a href="sessions.html">Sessões</a>
+        <a href="sessions.html">Consultar sessões</a>
+        <a href="user_area.html">Registrar uma sessão</a>
       </nav>
     </header>
     <div>
@@ -41,9 +39,27 @@
     </div>
 
     <script>
+      var general = "http://localhost:3000/sessions";
+      var week = "http://localhost:3000/week";
       async function getApiData() {
-        const response = await fetch("http://localhost:3000/sessions", {
-          method: "GET",
+        var dateSes = new Date(Date.now());
+      let year = dateSes.getFullYear();
+      let month = String(dateSes.getMonth() + 1).padStart(2, '0');
+      let day = String(dateSes.getDate()).padStart(2, '0');
+      let hours = String(dateSes.getHours()).padStart(2, '0');
+      let minutes = String(dateSes.getMinutes()).padStart(2, '0');
+      let seconds = String(dateSes.getSeconds()).padStart(2, '0');
+      var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+      console.log(formattedDate);
+        const response = await fetch(week, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            inicio: "2024-11-21",
+            fim: "2024-11-21", //aaaa,
+          }),
         });
         return response.json();
       }
@@ -53,7 +69,7 @@
         if (data.fim === null) {
           data.fim = "Em aberto";
         }
-        sel.innerHTML += `<tr>               
+        sel.innerHTML += `<tr>          
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
                   <td>${data.usuario}</td>

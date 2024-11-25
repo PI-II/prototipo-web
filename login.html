@@ -60,12 +60,11 @@
       });
 
       function redirect(tipo) {
-        /*if (tipo === "Gerente") {
-          window.location.href = "index.html";
+        if (tipo === "Gerente") {
+          window.location.href = "mang_area.html";
         } else {
           window.location.href = "user_area.html";
-        }*/
-       window.location.href = "user_area.html";
+        }
       }
 
       var email = document.querySelector("#email");
@@ -113,7 +112,7 @@
         alert(tipo);
         return tipo;
       }
-      //alo
+
       function login() {
         getApiData().then((data) => {
           localStorage.setItem("tipo", data[0].tipo);
