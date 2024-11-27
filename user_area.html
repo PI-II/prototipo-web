@@ -119,10 +119,11 @@
   });
   function setTime() {
     var dateSes = new Date(Date.now());
+    var offset = -3;
     let year = dateSes.getFullYear();
     let month = String(dateSes.getMonth() + 1).padStart(2, '0');
     let day = String(dateSes.getDate()).padStart(2, '0');
-    let hours = String(dateSes.getHours()).padStart(2, '0');
+    let hours = String(dateSes.getHours() + offset).padStart(2, '0');
     let minutes = String(dateSes.getMinutes()).padStart(2, '0');
     let seconds = String(dateSes.getSeconds()).padStart(2, '0');
     var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;

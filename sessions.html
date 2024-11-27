@@ -33,6 +33,7 @@
             <th>Entrada</th>
             <th>Saída</th>
             <th>CPF</th>
+            <th>Tempo</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -48,6 +49,7 @@
             <th>Entrada</th>
             <th>Saída</th>
             <th>CPF</th>
+            <th>Tempo</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -57,17 +59,10 @@
     <script>
       var general = "http://localhost:3000/sessions";
       var week = "http://localhost:3000/week";
-      function getTodayDate() {
-      let dateSes = new Date(Date.now());
-      let year = dateSes.getFullYear();
-      let month = String(dateSes.getMonth() + 1).padStart(2, '0');
-      let day = String(dateSes.getDate()).padStart(2, '0');
-      var formattedDate = `${year}-${month}-${day}`;
-      
-      return formattedDate;
-    }
 
-    function getMonday() {
+      var tempo;
+
+      function getMonday() {
       let mondayWeek = new Date(Date.now());
       let monday = mondayWeek.getDay() || 7;
       if (monday !== 1) {
@@ -76,10 +71,23 @@
       let year = mondayWeek.getFullYear();
       let month = String(mondayWeek.getMonth() + 1).padStart(2, '0');
       let dayW = String(mondayWeek.getDate()).padStart(2,'0');
-      var formattedMonday = `${year}-${month}-${dayW}`;
+      var formattedMonday = `${year}-${month}-${dayW} 00:00:00`;
 
       return formattedMonday;
     }
+function getSunday() {
+      let sundayWeek = new Date(Date.now());
+      let sunday = sundayWeek.getDay();
+      if (sunday != 0) {
+        sundayWeek.setHours(-24 * (sunday - 7));
+      }
+      let year = sundayWeek.getFullYear();
+      let month = String(sundayWeek.getMonth() + 1).padStart(2, '0');
+      let dayW = String(sundayWeek.getDate()).padStart(2,'0');
+      var formattedSunday = `${year}-${month}-${dayW} 23:59:59`;
+      return formattedSunday;
+    }
+
       async function getWeekData() {
         const response = await fetch(week, {
           method: "POST",
@@ -88,7 +96,7 @@
           },
           body: JSON.stringify({
             inicio: getMonday(),
-            fim: getTodayDate(), 
+            fim: getSunday(), 
           }),
         });
         return response.json();
@@ -103,28 +111,52 @@
         return response.json();
       }
       
+      
+      function calculaHoras(ini, f) {
+        if (f === "Em aberto") return "Em aberto";
+        const inicioSes = new Date(ini);
+        const fimSes = new Date(f);
+        const diffMilisecond = fimSes - inicioSes;
+        const diffH = Math.floor(diffMilisecond / 3600000);
+        const diffMins = Math.floor((diffMilisecond % 3600000) / 60000);
+        return `${diffH}h ${diffMins}m`;
+      }
+      function calcHora(ini, f) {
+        if (f === "Em aberto") return "Em aberto";
+        const inicioSes = new Date(ini);
+        const fimSes = new Date(f);
+        const diffMilisecond = fimSes - inicioSes;
+        const diffH = Math.floor(diffMilisecond / 3600000);
+        return diffH;
+        
+      }
+
       function genGeneralTable(data) {
-        var sel = document.querySelector("#sessionsTable");
+        var sel = document.querySelector("#sessionsTable tbody");
         if (data.fim === null) {
           data.fim = "Em aberto";
         }
+
         sel.innerHTML += `<tr>    
                   <td>${data.id}</td>           
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
                   <td>${data.usuario}</td>
+                  <td>${data.tempo}h</td>
               </tr>`;
       }
       function genWeekTable(data) {
-        var sel1 = document.querySelector("#weekSessions");
+        var sel1 = document.querySelector("#weekSessions tbody");
         if (data.fim === null) {
           data.fim = "Em aberto";
         }
+        
         sel1.innerHTML += `<tr>   
                   <td>${data.id}</td>       
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
                   <td>${data.usuario}</td>
+                  <td>${data.tempo}h</td>
               </tr>`;
       }
       function getData() {
@@ -134,7 +166,9 @@
           });
         });
       }
+      
       function getWData() {
+        
         getWeekData().then((data) => {
           data.forEach((element) => {
             genWeekTable(element);
