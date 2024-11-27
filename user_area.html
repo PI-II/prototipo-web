@@ -39,13 +39,16 @@
     </form>
   </div>
   <div>
-    <h2>Sessões</h2>
+    <h2>Sessões esta semana: </h2>
+    <p id="tempoTotal"></p>
+    <input type="button" onclick="getTotal()" value="Ver total">
     <table border="1" id="sessions" class="quicksand-nav">
       <thead>
         <tr>
           <th>ID</th>
           <th>Entrada</th>
           <th>Saída</th>
+          <th>Total</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -55,6 +58,32 @@
 
 </html>
 <script>
+
+function getMonday() {
+      let mondayWeek = new Date(Date.now());
+      let monday = mondayWeek.getDay() || 7;
+      if (monday !== 1) {
+        mondayWeek.setHours(-24* (monday - 1));
+      }
+      let year = mondayWeek.getFullYear();
+      let month = String(mondayWeek.getMonth() + 1).padStart(2, '0');
+      let dayW = String(mondayWeek.getDate()).padStart(2,'0');
+      var formattedMonday = `${year}-${month}-${dayW} 00:00:00`;
+
+      return formattedMonday;
+    }
+function getSunday() {
+      let sundayWeek = new Date(Date.now());
+      let sunday = sundayWeek.getDay();
+      if (sunday != 0) {
+        sundayWeek.setHours(-24 * (sunday - 7));
+      }
+      let year = sundayWeek.getFullYear();
+      let month = String(sundayWeek.getMonth() + 1).padStart(2, '0');
+      let dayW = String(sundayWeek.getDate()).padStart(2,'0');
+      var formattedSunday = `${year}-${month}-${dayW} 23:59:59`;
+      return formattedSunday;
+    }
 
   document.addEventListener("DOMContentLoaded", async function () {
     var email = localStorage.getItem("email");
@@ -85,11 +114,16 @@
     async function getSes() {
       let cpf = document.querySelector("#cpf").value;
       let format = cpf.replace(/\.|-/gm, "");
-      const response = await fetch(`http://localhost:3000/user/sessions/${format}`, {
-        method: "GET",
+      const response = await fetch(`http://localhost:3000/user/sessions`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          usuario: format,
+          inicio: getMonday(),
+          fim: getSunday(),
+        }),
       });
       return response.json();
     }
@@ -102,6 +136,7 @@
                 <td>${data.id}</td>           
                 <td>${data.inicio}</td>
                 <td>${data.fim}</td>
+                <td>${data.total}</td>
             </tr>`;
     }
     function getData() {
@@ -110,11 +145,11 @@
           genTable(element);
         });
       }).catch((error) => {
-        console.error("Erro:", error);
+        console.log("Erro:", error);
       });
+
     }
     getData();
-
 
   });
   function setTime() {
@@ -163,9 +198,22 @@
     if (response.status === 200) {
       row.cells[2].innerHTML = fim;
     } else {
-      console.error("Erro");
+      console.log("Erro");
     }
   }
 
+  function getTotal() {
+    const rows = document.querySelectorAll("#sessions tbody tr");
+    let total = 0;
+
+    rows.forEach(row => {
+            const tempo = row.cells[3].innerText;
+            const hours = parseInt(tempo.replace("h", ""), 10);
+            total += hours;
+        });          
+      
+    document.getElementById("tempoTotal").innerHTML = `Total de horas: ${total}h`;
+  }
+  
 
 </script>
