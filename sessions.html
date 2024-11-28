@@ -154,11 +154,12 @@
           data.fim = "Em aberto";
         }
         var tot = 0;
-        
+        let ini = new Date(data.inicio).toLocaleString('pt-BR');
+        let fim = new Date(data.fim).toLocaleString('pt-BR');
         sel.innerHTML += `<tr>    
                   <td>${data.id}</td>           
-                  <td>${data.inicio}</td>
-                  <td>${data.fim}</td>
+                  <td>${ini}</td>
+                  <td>${fim}</td>
                   <td>${data.usuario}</td>
                   <td>${data.tempo}h</td>
               </tr>`;
@@ -168,10 +169,12 @@
         if (data.fim === null) {
           data.fim = "Em aberto";
         }
+        let ini = new Date(data.inicio).toLocaleString('pt-BR');
+        let fim = new Date(data.fim).toLocaleString('pt-BR');
         sel1.innerHTML += `<tr>   
                   <td>${data.id}</td>       
-                  <td>${data.inicio}</td>
-                  <td>${data.fim}</td>
+                  <td>${ini}</td>
+                  <td>${fim}</td>
                   <td>${data.usuario}</td>
               </tr>`;
       }
