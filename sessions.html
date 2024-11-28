@@ -52,8 +52,8 @@
         </thead>
         <tbody></tbody>
       </table>
-      <br>
-      <br>
+      <br />
+      <br />
       <h2>Relatório Semanal</h2>
       <table border="1" id="weekSessions" class="quicksand-nav">
         <thead>
@@ -71,7 +71,7 @@
     <script>
       var general = "http://localhost:3000/sessions";
       var week = "http://localhost:3000/week";
-      
+
       var classif;
 
       async function getWeekData() {
@@ -103,18 +103,20 @@
       }
       function genUserTable(data) {
         var sel2 = document.querySelector("#users tbody");
-        
+
         var total = data.total;
-        if (total >=0 && total <= 5) {
+        if (total >= 0 && total <= 5) {
           classif = "Iniciante";
-        } else if(total >= 6 && total <= 10) {
+        } else if (total >= 6 && total <= 10) {
           classif = "Intermediário";
-        } else if(total >= 11 && total <= 20) {
+        } else if (total >= 11 && total <= 20) {
           classif = "Avançado";
         } else {
           classif = "Extremamente avançado";
         }
-
+        if (data.total == null || data.total == "") {
+          data.total = "Inválido";
+        }
         sel2.innerHTML += `<tr>
                   <td>${data.usuario}</td>
                   <td>${data.total}</td>
@@ -128,7 +130,7 @@
         });
       }
       getUData();
-      
+
       function calculaHoras(ini, f) {
         if (f === "Em aberto") return "Em aberto";
         const inicioSes = new Date(ini);
@@ -143,42 +145,53 @@
         const inicioSes = new Date(ini);
         const fimSes = new Date(f);
         const diffMilisecond = fimSes - inicioSes;
-        const diffH = Math.floor((diffMilisecond / 3600000));
+        const diffH = Math.floor(diffMilisecond / 3600000);
         return diffH;
-        
       }
 
       function genGeneralTable(data) {
         var sel = document.querySelector("#sessionsTable tbody");
-        if (data.fim === null) {
+        let fim = new Date(data.fim).toLocaleString("pt-BR", {
+          timeZone: "America/Sao_Paulo",
+        });
+        if (data.fim == null || data.fim == "") {
           data.fim = "Em aberto";
+        } else {
+          data.fim = fim;
         }
         var tot = 0;
-        let ini = new Date(data.inicio).toLocaleString('pt-BR');
-        let fim = new Date(data.fim).toLocaleString('pt-BR');
+        let ini = new Date(data.inicio).toLocaleString("pt-BR");
+        if (data.tempo == null) {
+          data.tempo = "Inválido";
+        }
         sel.innerHTML += `<tr>    
                   <td>${data.id}</td>           
                   <td>${ini}</td>
-                  <td>${fim}</td>
+                  <td>${data.fim}</td>
                   <td>${data.usuario}</td>
                   <td>${data.tempo}h</td>
               </tr>`;
       }
       function genWeekTable(data) {
         var sel1 = document.querySelector("#weekSessions tbody");
-        if (data.fim === null) {
+        let fim = new Date(data.fim).toLocaleString("pt-BR", {
+          timeZone: "America/Sao_Paulo",
+        });
+        if (data.fim == null || data.fim == "") {
           data.fim = "Em aberto";
+        } else {
+          data.fim = fim;
         }
-        let ini = new Date(data.inicio).toLocaleString('pt-BR');
-        let fim = new Date(data.fim).toLocaleString('pt-BR');
+        let ini = new Date(data.inicio).toLocaleString("pt-BR");
+
         sel1.innerHTML += `<tr>   
                   <td>${data.id}</td>       
                   <td>${ini}</td>
-                  <td>${fim}</td>
+                  <td>${data.fim}</td>
                   <td>${data.usuario}</td>
               </tr>`;
       }
-      
+
       function getData() {
         getGeneralData().then((data) => {
           data.forEach((element) => {
@@ -186,7 +199,7 @@
           });
         });
       }
-      
+
       function getWData() {
         getWeekData().then((data) => {
           data.forEach((element) => {
@@ -194,10 +207,9 @@
           });
         });
       }
-      
+
       getData();
       getWData();
-
     </script>
   </body>
 </html>
