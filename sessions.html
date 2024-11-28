@@ -24,18 +24,6 @@
         <a href="user_area.html">Registrar uma sessão</a>
       </nav>
     </header>
-    <div>
-      <h2>Usuários</h2>
-      <table border="1" id="users" class="quicksand-nav">
-        <thead>
-          <tr>
-            <th>CPF</th>
-            <th>Tempo</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
 
     <div>
       <h2>Sessões</h2>
@@ -54,6 +42,18 @@
     </div>
 
     <div>
+      <h2>Usuários</h2>
+      <table border="1" id="users" class="quicksand-nav">
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Tempo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <br>
+      <br>
       <h2>Relatório Semanal</h2>
       <table border="1" id="weekSessions" class="quicksand-nav">
         <thead>
@@ -62,7 +62,6 @@
             <th>Entrada</th>
             <th>Saída</th>
             <th>CPF</th>
-            <th>Tempo(h)</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -73,6 +72,7 @@
       var general = "http://localhost:3000/sessions";
       var week = "http://localhost:3000/week";
       
+      var classif;
 
       async function getWeekData() {
         const response = await fetch(week, {
@@ -103,6 +103,18 @@
       }
       function genUserTable(data) {
         var sel2 = document.querySelector("#users tbody");
+        
+        var total = data.total;
+        if (total >=0 && total <= 5) {
+          classif = "Iniciante";
+        } else if(total >= 6 && total <= 10) {
+          classif = "Intermediário";
+        } else if(total >= 11 && total <= 20) {
+          classif = "Avançado";
+        } else {
+          classif = "Extremamente avançado";
+        }
+
         sel2.innerHTML += `<tr>
                   <td>${data.usuario}</td>
                   <td>${data.total}</td>
@@ -116,8 +128,6 @@
         });
       }
       getUData();
-
-      
       
       function calculaHoras(ini, f) {
         if (f === "Em aberto") return "Em aberto";
@@ -133,7 +143,7 @@
         const inicioSes = new Date(ini);
         const fimSes = new Date(f);
         const diffMilisecond = fimSes - inicioSes;
-        const diffH = Math.floor(diffMilisecond / 3600000);
+        const diffH = Math.floor((diffMilisecond / 3600000));
         return diffH;
         
       }
@@ -163,7 +173,6 @@
                   <td>${data.inicio}</td>
                   <td>${data.fim}</td>
                   <td>${data.usuario}</td>
-                  <td>${data.tempo}</td>
               </tr>`;
       }
       
