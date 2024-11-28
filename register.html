@@ -122,10 +122,8 @@
         });
         console.log(response);
         if (tipo === "Gerente" && response.status === 200) {
-          window.location.href = "mang_area.html";
+          window.location.href = "index.html";
         } else if (tipo === "Aluno" && response.status === 200) {
-          window.location.href = "user_area.html";
-        } else {
           window.location.href = "index.html";
         }
         return response.json();

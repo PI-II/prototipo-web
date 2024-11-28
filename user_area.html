@@ -129,15 +129,18 @@ function getSunday() {
     }
     function genTable(data) {
       var sel = document.querySelector("#sessions tbody");
+      let fim = new Date(data.fim).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
       if (data.fim == null || data.fim == "") {
         data.fim = "<input type='button' value='Finalizar' onclick=\"endSes(event)\">";
+      } else {
+        data.fim = fim;
       }
       let ini = new Date(data.inicio).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-      let fim = new Date(data.fim).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+      
       sel.innerHTML += `<tr>    
                 <td>${data.id}</td>           
                 <td>${ini}</td>
-                <td>${fim}</td>
+                <td>${data.fim}</td>
                 <td>${data.total}</td>
             </tr>`;
     }
